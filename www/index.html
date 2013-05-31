@@ -29,41 +29,41 @@
     
     Shiny.inputBindings.register(myTumblrList);
   </script>
+  
 </head>
  
-<body bgcolor="#AAAAAA">
-  <h1>HTML UI</h1>
+<body style="background:#aaa">
+  <h1 style="font-family:Arial, Helvetica, sans-serif">Tumblr Notes Graphviz Chart</h1>
  
   <p>
-    <label>Distribution type:</label><br />
-    <select name="dist">
-      <option value="norm">Normal</option>
-      <option value="unif">Uniform</option>
-      <option value="lnorm">Log-normal</option>
-      <option value="exp">Exponential</option>
+    <label>Graph type:</label><br />
+    <select name="graphtype">
+      <option value="twopi">twopi</option>
+      <option value="neato">neato</option>
+      <option value="circo">circo</option>
+      <option value="dot">dot</option>
     </select> 
   </p>
   <p>
     <label>Enter the tumblr notes:</label><br />
     <textarea rows="4" cols="50" name="users">
-    Example
+    
+cooldude6 reblogged this from originalposter
+cooldude5 reblogged this from originalposter
+cooldude4 reblogged this from originalposter
+cooldude3 reblogged this from originalposter
+cooldude2 reblogged this from originalposter
+cooldude1 reblogged this from originalposter
+originalposter posted this
     </textarea> 
   </p>
-  <p>
-    <label>Number of observations:</label><br /> 
-    <input type="number" name="n" value="500" min="1" max="1000" />
-  </p>
- 
-  
-  <div id="plot" class="shiny-plot-output" 
-      style="width: 500px; height: 400px"></div> 
+
+
   
   <div id="myoutput" class="shiny-plot-output" 
-      style="width: 500px; height: 400px"></div>
+      style="width: 1024; height: 768"></div>
   
   
-  <div id="summary" class="shiny-html-output"></div> 
-  <div id="blah" class="shiny-text-output"></div> 
 </body>
 
 </html>

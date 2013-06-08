@@ -1,7 +1,9 @@
 library(shiny)
 library(Rgraphviz)
+#library(RColorBrewer)
 library(stringr)
 library(RBGL)
+library(animation)
 
 
 # Define server logic for random distribution application
@@ -10,14 +12,6 @@ shinyServer(function(input, output) {
   # Reactive expression to generate the requested distribution. This is 
   # called whenever the inputs change. The output renderers defined 
   # below then all used the value computed from this expression
-  graphType <- reactive({  
-    input$n
-  })
-  graphType <- reactive({  
-    switch(input$graphtype,circo = circo,dot = dot,neato = neato,twopi = twopi,
-          twopi)
-  })
-
  
   
   # Generate a summary of the data
@@ -25,6 +19,7 @@ shinyServer(function(input, output) {
     myfile<-strsplit(input$users,'\n')
     # grep 
     reblogSet<-str_match(myfile[[1]],"(.*) reblogged this from (.*)")
+    whoposted<-str_match(myfile[[1]],"(.*) posted this")
     whoposted<-str_match(myfile[[1]],"(.*) posted this")
     
     #remove non-reblog lines
@@ -43,35 +38,49 @@ shinyServer(function(input, output) {
     mydistances<-as.vector(unlist(mydistances))
     mydistances[is.na(mydistances)]=0
     
-    z=rEG
     nA=list()
-    nNodes <- length(nodes(z))
-    nA$fontsize <- rep(42, nNodes)
-    nA$fontcolor <- rep("blue", nNodes)
+    nNodes <- length(nodes(rEG))
+    nA$fontsize <- rep(12, nNodes)
     nA$fillcolor=(mydistances)+1
-    nA <- lapply(nA, function(x) { names(x) <- nodes(z); x})
+    nA <- lapply(nA, function(x) { names(x) <- nodes(rEG); x})
     #plot(z, nodeAttrs=nA,attrs=attrs)
     
-    
-    palette(rainbow(max(mydistances)+5))
+    ncol=max(mydistances)+3
+    mypal<-switch(input$palettetype,rainbow=rainbow(ncol),
+                  topo.colors=topo.colors(ncol),
+                  terrain.colors=terrain.colors(ncol),
+                  heat.colors=heat.colors(ncol),
+                  cm.colors=cm.colors(ncol))
+    palette(mypal)
     x <- layoutGraph(rEG,nodeAttrs=nA, layoutType=input$graphtype,attrs=attrs)
     
     renderGraph(x,graph.pars=list(overlap=FALSE))
   })
   
   
-  
-  
-  # Compute the forumla text in a reactive expression since it is 
-  # shared by the output$caption and output$mpgPlot expressions
-  tumblrData <- reactive({
-    input$users
+  output$myanimation<-renderUI({
+    ## A quick and dirty demo
+    outdir=tempdir()
+    loutdir=unlist(strsplit(outdir,'/'))
+    myoutdir=paste0('tmp/',loutdir[3])
+    dir.create(paste0('www/',myoutdir))
+    saveHTML({
+      par(mar = c(4, 4, 0.5, 0.5))
+      for (i in 1:20) {
+        plot(runif(20), ylim = c(0, 1))
+        ani.pause()
+      }
+    }, img.name = "anim_plot", imgdir = "img", autobrowse = FALSE, 
+             title = "Demo of animation", 
+             description = c("This is a NoteGraph animation"),
+             htmlfile='animation.html',outdir=paste0('www/',myoutdir))
+    
+    tags$iframe(src=paste0(myoutdir,'/animation.html'), 
+                id="aniframe", 
+                style="width:100%;height:800px;")
   })
   
-  # Return the formula text for printing as a caption
-  output$users <- renderText({
-    tumblrData()
-  })
+
   
   
 })

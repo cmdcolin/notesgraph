@@ -36,16 +36,14 @@
   <h1>Tumblr Notes Graphviz Chart</h1>
   <h2 style='color:#ee7777;background:#000;'>Animated Edition!!</h3>
  <p>Create pretty looking charts of the user-to-user reblogging of posts from tumblr. Posts should have the format "user1 posted this" and "user2 reblogged this from user1". Requires you to manually copy+paste the notes into the webpage (doesn't automatically fetch notes) </p>
-  <p>
+
     <label>Graph type:</label><br />
     <select name="graphtype">
       <option value="twopi">twopi</option>
       <option value="neato">neato</option>
       <option value="circo">circo</option>
       <option value="dot">dot</option>
-    </select>
-    </p>
-    <p>
+    </select><br />
     <label>Choose palette:</label><br />
     <select name="palettetype">
       <option value="rainbow">rainbow</option>
@@ -53,12 +51,14 @@
       <option value="topo.colors">topo.colors</option>
       <option value="terrain.colors">terrain.colors</option>
       <option value="cm.colors">cm.colors</option>
-    </select></p>
-    
-  <p>
+    </select><br />
+    <label>Animation type:</label><br />
+    <select name="animationtype">
+      <option value="html">HTML Widget</option>
+      <option value="gif">Animated GIF</option>
+    </select><br />
     <label>Enter the tumblr notes:</label><br />
-    <textarea rows="4" cols="50" name="users">
-userE1 reblogged this from userC3
+    <textarea rows="4" cols="50" name="users">userE1 reblogged this from userC3
 userE2 reblogged this from userC3
 userE3 reblogged this from userC3
 userE4 reblogged this from userC3
@@ -91,9 +91,7 @@ userA4 reblogged this from originalposter
 userA3 reblogged this from originalposter
 userA2 reblogged this from originalposter
 userA1 reblogged this from originalposter
-originalposter posted this  
-    </textarea> 
-  </p>
+originalposter posted this</textarea><br />
 
 
   <div id="myanimation" class="shiny-html-output" style="width:100%;height: 800px;"></div>

@@ -38,6 +38,23 @@ plotSubset<-function(reblogSet, whoposted,i,input) {
   
   renderGraph(x,graph.pars=list(overlap=FALSE))
 }
+
+
+
+compileGraph<-function(input) {
+  myfile<-strsplit(input$users,'\n')
+  reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
+  whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
+  
+  #remove non-reblog lines
+  reblogSet<-reblogSet[!is.na(reblogSet[,1]),]
+  whoposted<-whoposted[!is.na(whoposted[,1]),]
+  
+  nr<-nrow(reblogSet)
+  for (i in 2:nrow(reblogSet)) {
+    plotSubset(reblogSet, whoposted, i,input)
+  }
+}
 # Define server logic for random distribution application
 shinyServer(function(input, output) {
   
@@ -50,27 +67,13 @@ shinyServer(function(input, output) {
     
     # create tmp directory without using tempdir()
     wordspace<-c(0:9, letters, LETTERS)
-    length<-6
-    randstr<-paste(sample(wordspace,length, replace=TRUE),collapse="")
+    randstr<-paste(sample(wordspace,size=6, replace=TRUE),collapse="")
     myoutdir<-file.path('tmp',randstr)
     dir.create(file.path('www',myoutdir))
     
     if(input$animationtype=='html') {
       saveHTML({
-        myfile<-strsplit(input$users,'\n')
-        reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
-        whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
-        
-        #remove non-reblog lines
-        reblogSet<-reblogSet[!is.na(reblogSet[,1]),]
-        whoposted<-whoposted[!is.na(whoposted[,1]),]
-        
-        nr<-nrow(reblogSet)
-        for (i in 2:nrow(reblogSet)) {
-          
-          plotSubset(reblogSet, whoposted, i,input)
-          ani.pause()
-        }
+        compileGraph(input)
       }, img.name = "anim_plot", imgdir = "img", autobrowse = FALSE, 
                title = "Demo of animation", 
                description = c("This is a TumblrGraph animation"),
@@ -83,18 +86,7 @@ shinyServer(function(input, output) {
                            style="width:100%;height:800px;"))
     } else {
       saveGIF({
-        myfile<-strsplit(input$users,'\n')
-        reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
-        whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
-        
-        #remove non-reblog lines
-        reblogSet<-reblogSet[!is.na(reblogSet[,1]),]
-        whoposted<-whoposted[!is.na(whoposted[,1]),]
-        
-        nr<-nrow(reblogSet)
-        for (i in 2:nrow(reblogSet)) {
-          plotSubset(reblogSet, whoposted, i,input)
-        }
+        compileGraph(input)
       }, movie.name = "animation.gif", autobrowse = FALSE, 
               title = "Demo of animation", clean=FALSE,
               description = c("This is a TumblrGraph animation"),

@@ -50,7 +50,7 @@ shinyServer(function(input, output) {
     
     # create tmp directory without using tempdir()
     wordspace<-c(0:9, letters, LETTERS)
-    length<-6       
+    length<-6
     randstr<-paste(sample(wordspace,length, replace=TRUE),collapse="")
     myoutdir<-file.path('tmp',randstr)
     dir.create(file.path('www',myoutdir))
@@ -82,7 +82,7 @@ shinyServer(function(input, output) {
                tags$iframe(src=file.path(myoutdir,'animation.html'), 
                            style="width:100%;height:800px;"))
     } else {
-      x=saveGIF({
+      saveGIF({
         myfile<-strsplit(input$users,'\n')
         reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
         whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
@@ -101,9 +101,7 @@ shinyServer(function(input, output) {
               outdir=file.path('www',myoutdir))
       
       tags$div(tags$h3(myoutdir), 
-               tags$br(),tags$p(x),
-               tags$br(),tags$img(src=file.path(myoutdir,'animation.gif')),
-               tags$br(),tags$pre(file.path('www',myoutdir)))
+               tags$br(),tags$img(src=file.path(myoutdir,'animation.gif')))
     }
 
     

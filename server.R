@@ -24,31 +24,30 @@ shinyServer(function(input, output) {
     myoutdir<-file.path('tmp',randstr)
     dir.create(file.path('www',myoutdir))
     
-    if(input$animationtype=='html') {
+    if(input$animationtype=='html'){ 
       saveHTML({
         compileGraph()
       }, img.name = "anim_plot", imgdir = "img", autobrowse = FALSE, 
-               title = "Demo of animation", 
-               description = c("This is a TumblrGraph animation"),
-               htmlfile='animation.html',
-               outdir=file.path('www',myoutdir))
+         htmlfile='animation.html',
+         outdir=file.path('www',myoutdir))
       
       
-      tags$div(tags$h3(myoutdir), tags$br(),
-               tags$iframe(src=file.path(myoutdir,'animation.html'), 
-                           style="width:100%;height:800px;"))
-    } else {
+      tags$div(tags$iframe(src=file.path(myoutdir,'animation.html'), 
+                           style="width:1024px;height:768px;"))
+    } else if(input$animationtype=="gif") {
       saveGIF({
         compileGraph()
-      }, movie.name = "animation.gif", autobrowse = FALSE, 
-              title = "Demo of animation", clean=FALSE,
-              description = c("This is a TumblrGraph animation"),
-              outdir=file.path('www',myoutdir))
+      }, movie.name = "animation.gif", autobrowse = FALSE, clean=FALSE,
+        outdir=file.path('www',myoutdir))
       
-      tags$div(tags$h3(myoutdir), 
-               tags$br(),tags$img(src=file.path(myoutdir,'animation.gif')))
+      tags$div(tags$img(src=file.path(myoutdir,'animation.gif')))
+    } else if(input$animationtype=="static") {
+      png(file=file.path('www',myoutdir,"animation.png"),width=1024,height=768)
+      staticGraph()
+      dev.off()
+      tags$div(tags$img(src=file.path(myoutdir,'animation.png')))
     }
-
+    
     
   })
   
@@ -67,6 +66,19 @@ shinyServer(function(input, output) {
     for (i in 2:nrow(reblogSet)) {
       plotSubset(reblogSet, whoposted, i)
     }
+  }
+  
+  staticGraph<-function() {
+    myfile<-strsplit(input$users,'\n')
+    reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
+    whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
+    
+    #remove non-reblog lines
+    reblogSet<-reblogSet[!is.na(reblogSet[,1]),]
+    whoposted<-whoposted[!is.na(whoposted[,1]),]
+    
+    nr<-nrow(reblogSet)
+    plotSubset(reblogSet, whoposted, nr)
   }
   
   plotSubset<-function(reblogSet, whoposted,i) {

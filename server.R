@@ -55,6 +55,7 @@ shinyServer(function(input, output) {
   
   compileGraph<-function() {
     myfile<-strsplit(input$users,'\n')
+    
     reblogSet<-str_match(myfile[[1]],"([^ ]*) reblogged this from ([^ ]*)")
     whoposted<-str_match(myfile[[1]],"([^ ]*) posted this")
     
@@ -113,6 +114,7 @@ shinyServer(function(input, output) {
     
     renderGraph(mygraph,graph.pars=list(overlap=FALSE))
   }
+
   
   
 })

@@ -28,8 +28,7 @@ shinyServer(function(input, output) {
       saveHTML({
         compileGraph()
       }, img.name = "anim_plot", imgdir = "img", autobrowse = FALSE, 
-         htmlfile='animation.html',
-         outdir=file.path('www',myoutdir))
+         htmlfile='animation.html',outdir=file.path('www',myoutdir))
       
       
       tags$div(tags$iframe(src=file.path(myoutdir,'animation.html'), 
@@ -37,17 +36,15 @@ shinyServer(function(input, output) {
     } else if(input$animationtype=="gif") {
       saveGIF({
         compileGraph()
-      }, movie.name = "animation.gif", autobrowse = FALSE, clean=FALSE,
-        outdir=file.path('www',myoutdir))
+      }, movie.name = "animation.gif", autobrowse = FALSE, clean=FALSE,outdir=file.path('www',myoutdir))
       
-      tags$div(tags$img(src=file.path(myoutdir,'animation.gif')))
+      tags$div(tags$p(file.path(myoutdir,'animation.gif')),tags$br(),tags$img(src=file.path(myoutdir,'animation.gif')))
     } else if(input$animationtype=="static") {
-      png(file=file.path('www',myoutdir,"animation.png"),width=1024,height=768)
+      png(file=file.path(file.path('www',myoutdir),"graph.png"),width=1024,height=768)
       staticGraph()
       dev.off()
-      tags$div(tags$img(src=file.path(myoutdir,'animation.png')))
+      tags$div(tags$img(src=file.path(myoutdir,'graph.png')))
     }
-    
     
   })
   
@@ -99,11 +96,34 @@ shinyServer(function(input, output) {
     nA=list()
     nNodes <- length(nodes(rEG))
     nA$fontsize <- rep(12, nNodes)
-    nA$fillcolor=(mydistances)+1
+    
+    if(input$colortype=="distance") {
+      ncol=max(mydistances)+3
+      nA$fillcolor=(mydistances)+1
+    } else if(input$colortype=="degree") {
+      ncol=max(degree(rEG)$outDegree)+3
+      nA$fillcolor=(degree(rEG)$outDegree)+1
+    }
+    
+    #add parameters for sizenode
+    if(!is.null(input$sizenode)&&input$sizenode=="checked") {
+      #scale on node degree
+      degreescale=sqrt((degree(rEG)$outDegree)/max(degree(rEG)$outDegree+1))
+      #additionally scale on size of ndoe name
+      widthscale=2*sapply(nodes(rEG),nchar)/max(sapply(nodes(rEG),nchar))
+      #input scalefactor
+      scalefactor=as.numeric(input$scalefactor)
+      
+      #change width,height,fontsize using scalefactors
+      nA$width=0.5*3*scalefactor*degreescale+widthscale
+      nA$height=0.15*5*scalefactor*degreescale
+      nA$fontsize=10*scalefactor*degreescale+12
+    }
+
+    
     nA <- lapply(nA, function(x) { names(x) <- nodes(rEG); x})
     #plot(z, nodeAttrs=nA,attrs=attrs)
     
-    ncol=max(mydistances)+3
     mypal<-switch(input$palettetype,rainbow=rainbow(ncol),
                   topo.colors=topo.colors(ncol),
                   terrain.colors=terrain.colors(ncol),
@@ -112,6 +132,9 @@ shinyServer(function(input, output) {
     palette(mypal)
     mygraph <- layoutGraph(rEG,nodeAttrs=nA, layoutType=input$graphtype,attrs=attrs)
     
+    #this is required to add the node attributes for fontsize
+    #see https://stat.ethz.ch/pipermail/bioconductor/2008-January/021031.html
+    nodeRenderInfo(mygraph) <- list(fontsize = nA$fontsize)
     renderGraph(mygraph,graph.pars=list(overlap=FALSE))
   }
 

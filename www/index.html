@@ -4,6 +4,7 @@
   <title>Tumblr Notes Visualizer</title>
   <script src="shared/jquery.js" type="text/javascript"></script>
   <script src="shared/shiny.js" type="text/javascript"></script>
+  <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></scrip>t
   <link rel="stylesheet" type="text/css" href="shared/shiny.css"/> 
   <script>
     var myTumblrList = new Shiny.InputBinding();
@@ -32,9 +33,10 @@
   
 </head>
  
-<body style="background:#aaa; font-family:Arial, Helvetica, sans-serif; font-size: 14">
+<body style="background:#ccc; font-family:Arial, Helvetica, sans-serif; font-size: 14">
   <h1>Tumblr Notes Graphviz Chart</h1>
   <h2 style='color:#ee7777;background:#000;'>Animated Edition!!</h3>
+  <h2 style='color:#000;background:#ee7777;'>Fixed</h3>
  <p>Create pretty looking charts of the user-to-user reblogging of posts from tumblr. Posts should have the format "user1 posted this" and "user2 reblogged this from user1". Requires you to manually copy+paste the notes into the webpage (doesn't automatically fetch notes) </p>
 
     <label>Graph type:</label><br />
@@ -58,6 +60,20 @@
       <option value="gif">Animated GIF</option>
       <option value="html">HTML Widget</option>
     </select><br />
+    <label>Color by:</label><br />
+    <select name="colortype">
+      <option value="distance">Distance from root</option>
+      <option value="degree">Degree of node</option>
+    </select><br />
+    <br />
+    <label>Emphasize nodes with high connectivity? </label>
+    <input type="checkbox" name="sizenode" value="checked" />
+    <br />
+    <label>Enter a scaling factor for connectivity</label>
+    <input type="text" name="scalefactor" value="2" />
+    <br />
+    <br />
+    
     <label>Enter the tumblr notes:</label><br />
     <textarea rows="4" cols="50" name="users">userE1 reblogged this from userC3
 userE2 reblogged this from userC3
@@ -98,7 +114,7 @@ originalposter posted this</textarea><br />
   <div id="myanimation" class="shiny-html-output"></div>
   
 
-   <p>Visit my <a href="http://searchvoidstar.tumblr.com">blog!</a></p>
+   <p>Visit my <a href="http://searchvoidstar.tumblr.com">blog!</a> Or my other visual/art <a href="http://reallyreallygone.tumblr.com">blog!</a></p>
 </body>
 
 </html>

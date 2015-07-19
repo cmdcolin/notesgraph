@@ -106,7 +106,7 @@ shinyServer(function(input, output) {
     }
     
     #add parameters for sizenode
-    if(!is.null(input$sizenode)&&input$sizenode=="checked") {
+    if(!is.null(input$sizenode)&&input$sizenode==TRUE) {
       #scale on node degree
       degreescale=sqrt((degree(rEG)$outDegree)/max(degree(rEG)$outDegree+1))
       #additionally scale on size of ndoe name

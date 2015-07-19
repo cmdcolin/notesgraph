@@ -1,9 +1,10 @@
-Tumblr social network graphs made from reblogging notes using Graphviz
+#TumblrGraph
 
-Features
-- Uses rstudio Shiny platform to create interactive web visualizations
-- Animation of the network growth
-- More to come!
+An app to show the reblogging of posts on Tumblr
 
 
-See http://spark.rstudio.com/grubble/TumblrGraph/
+- Uses RStudio Shiny platform to create interactive web visualizations
+- Animation of the network growth (not working on shinyapps yet)
+
+
+See http://colindiesh.shinyapps.io/tumblrgraph/

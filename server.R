@@ -22,7 +22,7 @@ shinyServer(function(input, output) {
     wordspace<-c(0:9, letters, LETTERS)
     randstr<-paste(sample(wordspace,size=6, replace=TRUE),collapse="")
     myoutdir<-file.path('tmp',randstr)
-    dir.create(file.path('www',myoutdir))
+    dir.create(file.path('www',myoutdir),recursive=TRUE)
     
     if(input$animationtype=='html'){ 
       saveHTML({

@@ -8,3 +8,6 @@ An app to show the reblogging of posts on Tumblr
 
 
 See http://colindiesh.shinyapps.io/tumblrgraph/
+
+
+Note: newer version of app called tumblrgraph2 exists now at a different repo and this is provided only for historical purposes
